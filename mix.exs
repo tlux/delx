@@ -21,7 +21,7 @@ defmodule Delx.MixProject do
 
       # Docs
       name: "Delx",
-      source_url: "https://github.com/i22-digitalagentur/sftp_client",
+      source_url: "https://github.com/i22-digitalagentur/delx",
       docs: [
         main: "Delx",
         extras: ["README.md"],
