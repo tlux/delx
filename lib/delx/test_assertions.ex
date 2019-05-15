@@ -53,6 +53,30 @@ defmodule Delx.TestAssertions do
     Enum.map(1..arity, &{:arg_stub, &1})
   end
 
+  @doc """
+  Refutes whether the function specified by MFA (module-function-arity tuple) is
+  delegated to the the given target module. Accepts the same options as the
+  `Kernel.defdelegate/2` macro.
+
+  ## Options
+
+  * `:to` - The module to which the function delegates to.
+  * `:as` - The name of the function in the target module.
+
+  ## Example
+
+      defmodule GreeterTest do
+        use ExUnit.Case
+
+        import Delx.TestAssertions
+
+        describe "hello/1" do
+          test "delegate to Greeter.StringGreeter" do
+            refute_delegate {Greeter, :hello, 1}, to: Greeter.StringGreeter
+          end
+        end
+      end
+  """
   def refute_delegate({module, fun, arity}, opts \\ []) do
     target = get_delegation_target(opts)
     as_fun = opts[:as] || fun
