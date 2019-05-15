@@ -1,6 +1,6 @@
 defmodule Delx do
   @moduledoc """
-  Provides a macro that makes function delegation testable.
+  An Elixir library to make function delegation testable.
 
   ## Usage
 
