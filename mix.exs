@@ -7,6 +7,7 @@ defmodule Delx.MixProject do
       version: "1.0.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
+      description: description(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
@@ -15,7 +16,23 @@ defmodule Delx.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
-      elixirc_paths: elixirc_paths(Mix.env())
+      package: package(),
+      elixirc_paths: elixirc_paths(Mix.env()),
+
+      # Docs
+      name: "Delx",
+      source_url: "https://github.com/i22-digitalagentur/sftp_client",
+      docs: [
+        main: "Delx",
+        extras: ["README.md"],
+        groups_for_modules: [
+          Delegators: [
+            Delx.Delegator,
+            Delx.Delegator.Common,
+            Delx.Delegator.Stub
+          ]
+        ]
+      ]
     ]
   end
 
@@ -30,8 +47,20 @@ defmodule Delx.MixProject do
   defp deps do
     [
       {:excoveralls, "~> 0.11.0", only: :test},
-      {:ex_doc, "~> 0.20.2", only: :dev},
-      {:mox, "~> 0.5.0", only: :test}
+      {:ex_doc, "~> 0.20.2", only: :dev}
+    ]
+  end
+
+  defp description do
+    "An Elixir library to make function delegation testable."
+  end
+
+  defp package do
+    [
+      licenses: ["MIT"],
+      links: %{
+        "Source" => "https://github.com/i22-digitalagentur/delx"
+      }
     ]
   end
 
