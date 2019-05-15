@@ -33,7 +33,7 @@ defmodule Delx do
 
   ### With the Stub Delegator
 
-  Delx brings it's own delegator stub.
+  Delx brings it's own stub delegator.
 
   You can activate it for your test environment by putting the following line in
   your `config/test.exs`:
@@ -58,16 +58,19 @@ defmodule Delx do
 
   ### With Mox
 
-  If you are already using [Mox](https://hexdocs.pm/mox) in your application
-  it's straightforward to test delegates.
+  If you are using [Mox](https://hexdocs.pm/mox) in your application you have
+  another possibility to test delegates.
 
   Add the mock for the `Delx.Delegator` behavior to your `test/test_helper.exs`:
 
       Mox.defmock(Delx.Delegator.Mock, for: Delx.Delegator)
 
-  Then, in your `config/test.exs` you have to set the mock as delegator module:
+  Then, in your `config/test.exs` you have to set the mock as delegator module.
 
       config :delx, :delegator, Delx.Delegator.Mock
+
+  Please make sure not to use the `:stub` option and a `:delegator` option at
+  the same time as this may lead to unexpected behavior.
 
   Now you are able to `expect` calls to delegated functions:
 
@@ -80,9 +83,12 @@ defmodule Delx do
 
         describe "hello/1" do
           test "delegate to Greeter.StringGreeter" do
-            expect(Delx.Delegator.Mock, :apply, fn Greeter.StringGreeter,
-                                                   :hello,
-                                                   ["Tobi"] ->
+            expect(
+              Delx.Delegator.Mock,
+              :apply,
+              fn {Greeter, :hello},
+                 {Greeter.StringGreeter, :hello},
+                 ["Tobi"] ->
               :ok
             end)
 
