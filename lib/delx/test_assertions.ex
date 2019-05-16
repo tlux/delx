@@ -5,7 +5,7 @@ defmodule Delx.TestAssertions do
   Note that you need to activate stubbing for your test environment in order to
   make the assertions work. In your `config/text.exs` file:
 
-      config :delx, :stub, true
+      config :my_app, Delx, :stub, true
   """
 
   import Exception, only: [format_mfa: 3]
