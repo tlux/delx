@@ -3,7 +3,7 @@ defmodule Delx.TestAssertions do
   A module that contains assertions for `ExUnit` to test function delegation.
 
   Note that you need to activate stubbing for your test environment in order to
-  make the assertions work. In your `config/text.exs` file:
+  make the assertions work. In your `config/test.exs` file:
 
       config :my_app, Delx, stub: true
   """
