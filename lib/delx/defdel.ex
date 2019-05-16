@@ -1,6 +1,6 @@
 defmodule Delx.Defdel do
   @moduledoc """
-  A module defining a macro to define delegated functions.
+  A module defining a macro to define delegate functions.
   """
 
   @doc """
