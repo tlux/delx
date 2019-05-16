@@ -9,7 +9,9 @@ defmodule Delx.TestAssertions do
   """
 
   import Exception, only: [format_mfa: 3]
-  import ExUnit.Assertions, only: [assert: 2]
+  import ExUnit.Assertions
+
+  alias Delx.StubbedDelegationError
 
   @doc """
   Asserts whether the function specified by MFA (module-function-arity tuple) is
@@ -35,22 +37,43 @@ defmodule Delx.TestAssertions do
         end
       end
   """
-  @spec assert_delegate(mfa, Keyword.t()) :: no_return
-  def assert_delegate({module, fun, arity}, opts \\ []) do
-    target = get_delegation_target(opts)
-    as_fun = opts[:as] || fun
+  @spec assert_delegate(mfa, Keyword.t()) :: :ok | no_return
+  def assert_delegate({mod, fun, arity}, opts \\ []) do
+    target_mod = get_target_mod(opts)
+    target_fun = opts[:as] || fun
     args = stub_args(arity)
 
-    assert(
-      apply(module, fun, args) ==
-        {:delx, {module, fun}, {target, as_fun}, args},
-      "#{format_mfa(module, fun, arity)} " <>
-        "does not delegate to #{format_mfa(target, as_fun, arity)}"
-    )
-  end
+    try do
+      apply(mod, fun, args)
 
-  defp stub_args(arity) do
-    Enum.map(1..arity, &{:arg_stub, &1})
+      flunk(
+        "Expected #{format_mfa(mod, fun, arity)} to delegate to " <>
+          "#{format_mfa(target_mod, target_fun, arity)}, but no " <>
+          "delegation found."
+      )
+    rescue
+      error in StubbedDelegationError ->
+        case error do
+          %{
+            source: {^mod, ^fun},
+            target: {^target_mod, ^target_fun},
+            args: ^args
+          } ->
+            :ok
+
+          %{
+            source: {^mod, ^fun},
+            target: {actual_target_mod, actual_target_fun},
+            args: ^args
+          } ->
+            flunk(
+              "Expected #{format_mfa(mod, fun, arity)} to delegate to " <>
+                "#{format_mfa(target_mod, target_fun, arity)}, but instead " <>
+                "delegates to " <>
+                "#{format_mfa(actual_target_mod, actual_target_fun, arity)}."
+            )
+        end
+    end
   end
 
   @doc """
@@ -77,20 +100,40 @@ defmodule Delx.TestAssertions do
         end
       end
   """
-  def refute_delegate({module, fun, arity}, opts \\ []) do
-    target = get_delegation_target(opts)
-    as_fun = opts[:as] || fun
+  @spec refute_delegate(mfa, Keyword.t()) :: :ok | no_return
+  def refute_delegate({mod, fun, arity}, opts \\ []) do
+    target_mod = get_target_mod(opts)
+    target_fun = opts[:as] || fun
     args = stub_args(arity)
 
-    assert(
-      apply(module, fun, args) !=
-        {:delx, {module, fun}, {target, as_fun}, args},
-      "#{format_mfa(module, fun, arity)} " <>
-        "unintentionally delegates to #{format_mfa(target, as_fun, arity)}"
-    )
+    try do
+      apply(mod, fun, args)
+      :ok
+    rescue
+      error in StubbedDelegationError ->
+        case error do
+          %{
+            source: {^mod, ^fun},
+            target: {^target_mod, ^target_fun},
+            args: ^args
+          } ->
+            flunk(
+              "Expected #{format_mfa(mod, fun, arity)} to not delegate to " <>
+                "#{format_mfa(target_mod, target_fun, arity)}, but " <>
+                "delegation found."
+            )
+
+          _ ->
+            :ok
+        end
+    end
   end
 
-  defp get_delegation_target(opts) do
+  defp stub_args(arity) do
+    Enum.map(1..arity, &{:arg_stub, &1})
+  end
+
+  defp get_target_mod(opts) do
     opts[:to] || raise ArgumentError, "expected to: to be given as argument"
   end
 end

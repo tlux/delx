@@ -8,10 +8,10 @@ defmodule Delx.Delegator.Stub do
 
   @behaviour Delx.Delegator
 
+  alias Delx.StubbedDelegationError
+
   @impl true
   def apply(source, target, args) do
-    result = {:delx, source, target, args}
-    send(self(), result)
-    result
+    raise StubbedDelegationError, source: source, target: target, args: args
   end
 end

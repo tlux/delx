@@ -12,12 +12,12 @@ defmodule Delx do
       ...>   end
       ...> end
 
-  You can delegate functions calls to another module by importing the `Delx`
+  You can delegate functions calls to another module by using the `Delx`
   module and using the `defdel/2` macro. It has the same syntax and options as
   Elixir's own `Kernel.defdelegate/2` macro.
 
       iex> defmodule Greeter do
-      ...>   import Delx
+      ...>   use Delx, otp_app: :greeter
 
       ...>   defdel hello(name), to: Greeter.StringGreeter
       ...> end
@@ -38,7 +38,7 @@ defmodule Delx do
   You can activate it for your test environment by putting the following line in
   your `config/test.exs`:
 
-      config :delx, :stub, true
+      config :greeter, Delx, stub: true
       # or
       config :delx, :delegator, Delx.Delegator.Stub
 
@@ -98,41 +98,24 @@ defmodule Delx do
       end
   """
 
-  @doc """
-  The module that is used to control delegation. Has to implement the
-  `Delx.Delegator` behavior.
-  """
-  @spec __delegator__() :: module
-  def __delegator__ do
-    case Application.fetch_env(:delx, :stub) do
-      {:ok, true} -> Delx.Delegator.Stub
-      _ -> Application.get_env(:delx, :delegator, Delx.Delegator.Common)
-    end
-  end
+  defmacro __using__(opts) do
+    quote bind_quoted: [opts: opts] do
+      otp_app =
+        opts[:otp_app] ||
+          raise ArgumentError, "expected otp_app: to be given as argument"
 
-  @doc """
-  Defines a function that delegates to another module. Has the same API as
-  `Kernel.defdelegate/2`.
-  """
-  defmacro defdel(funs, opts) do
-    funs = Macro.escape(funs, unquote: true)
+      @doc false
+      @spec __delegator__() :: module
+      def __delegator__ do
+        config = Application.get_env(unquote(otp_app), Delx, [])
 
-    quote bind_quoted: [funs: funs, opts: opts] do
-      target =
-        opts[:to] || raise ArgumentError, "expected to: to be given as argument"
-
-      for fun <- List.wrap(funs) do
-        {name, args, as, as_args} = Kernel.Utils.defdelegate(fun, opts)
-
-        @doc delegate_to: {target, as, :erlang.length(as_args)}
-        def unquote(name)(unquote_splicing(args)) do
-          Delx.__delegator__().apply(
-            {unquote(__MODULE__), unquote(name)},
-            {unquote(target), unquote(as)},
-            unquote(args)
-          )
+        case Keyword.fetch(config, :stub) do
+          {:ok, true} -> Delx.Delegator.Stub
+          _ -> Keyword.get(config, :delegator, Delx.Delegator.Common)
         end
       end
+
+      import Delx.Defdel
     end
   end
 end

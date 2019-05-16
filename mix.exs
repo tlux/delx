@@ -4,7 +4,7 @@ defmodule Delx.MixProject do
   def project do
     [
       app: :delx,
-      version: "1.0.1",
+      version: "2.0.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       description: description(),
@@ -47,7 +47,7 @@ defmodule Delx.MixProject do
   defp deps do
     [
       {:excoveralls, "~> 0.11.0", only: :test},
-      {:ex_doc, "~> 0.20.2", only: :dev}
+      {:ex_doc, "~> 0.20.2", only: [:dev, :test]}
     ]
   end
 

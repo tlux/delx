@@ -3,13 +3,13 @@ defmodule DelxTest.TestAssertionsTest do
 
   import Delx.TestAssertions
 
-  alias Delx.Delegator.Stub, as: StubDelegator
+  alias ExUnit.AssertionError
 
   setup do
-    Application.put_env(:delx, :delegator, StubDelegator)
+    Application.put_env(:my_app, Delx, stub: true)
 
     on_exit(fn ->
-      Application.delete_env(:delx, :delegator)
+      Application.delete_env(:my_app, Delx)
     end)
 
     :ok
@@ -25,15 +25,38 @@ defmodule DelxTest.TestAssertionsTest do
 
     test "success with :as option" do
       assert_delegate(
-        {SourceModuleC, :custom_named_fun, 1},
+        {SourceModuleA, :custom_named_fun, 1},
         to: TargetModule,
         as: :my_other_fun
       )
     end
 
-    test "failure" do
-      assert_raise ExUnit.AssertionError,
-                   ~r/SourceModuleB.undelegated_fun\/1 does not delegate to TargetModule.undelegated_fun\/1/,
+    test "wrong delegation failure" do
+      assert_raise AssertionError,
+                   ~r/Expected SourceModuleB.my_fun\/3 to delegate to SourceModuleA.my_fun\/3, but instead delegates to TargetModule.my_fun\/3./,
+                   fn ->
+                     assert_delegate(
+                       {SourceModuleB, :my_fun, 3},
+                       to: SourceModuleA
+                     )
+                   end
+    end
+
+    test "wrong delegation failure with :as option" do
+      assert_raise AssertionError,
+                   ~r/Expected SourceModuleB.my_fun\/3 to delegate to SourceModuleA.unknown_fun\/3, but instead delegates to TargetModule.my_fun\/3./,
+                   fn ->
+                     assert_delegate(
+                       {SourceModuleB, :my_fun, 3},
+                       to: SourceModuleA,
+                       as: :unknown_fun
+                     )
+                   end
+    end
+
+    test "no delegation failure" do
+      assert_raise AssertionError,
+                   ~r/Expected SourceModuleB.undelegated_fun\/1 to delegate to TargetModule.undelegated_fun\/1, but no delegation found./,
                    fn ->
                      assert_delegate(
                        {SourceModuleB, :undelegated_fun, 1},
@@ -42,9 +65,9 @@ defmodule DelxTest.TestAssertionsTest do
                    end
     end
 
-    test "failure with :as option" do
-      assert_raise ExUnit.AssertionError,
-                   ~r/SourceModuleB.undelegated_fun\/1 does not delegate to TargetModule.my_other_fun\/1/,
+    test "no delegation failure with :as option" do
+      assert_raise AssertionError,
+                   ~r/Expected SourceModuleB.undelegated_fun\/1 to delegate to TargetModule.my_other_fun\/1, but no delegation found./,
                    fn ->
                      assert_delegate(
                        {SourceModuleB, :undelegated_fun, 1},
@@ -77,9 +100,9 @@ defmodule DelxTest.TestAssertionsTest do
       )
     end
 
-    test "failure" do
+    test "delegation failure" do
       assert_raise ExUnit.AssertionError,
-                   ~r/SourceModuleB.my_other_fun\/1 unintentionally delegates to TargetModule.my_other_fun\/1/,
+                   ~r/Expected SourceModuleB.my_other_fun\/1 to not delegate to TargetModule.my_other_fun\/1, but delegation found./,
                    fn ->
                      refute_delegate(
                        {SourceModuleB, :my_other_fun, 1},
@@ -88,12 +111,12 @@ defmodule DelxTest.TestAssertionsTest do
                    end
     end
 
-    test "failure with :as option" do
+    test "delegation failure with :as option" do
       assert_raise ExUnit.AssertionError,
-                   ~r/SourceModuleC.custom_named_fun\/1 unintentionally delegates to TargetModule.my_other_fun\/1/,
+                   ~r/Expected SourceModuleA.custom_named_fun\/1 to not delegate to TargetModule.my_other_fun\/1, but delegation found./,
                    fn ->
                      refute_delegate(
-                       {SourceModuleC, :custom_named_fun, 1},
+                       {SourceModuleA, :custom_named_fun, 1},
                        to: TargetModule,
                        as: :my_other_fun
                      )

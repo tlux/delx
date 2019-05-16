@@ -18,7 +18,7 @@ by adding `delx` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:delx, "~> 1.0.1"}
+    {:delx, "~> 2.0.0"}
   ]
 end
 ```
