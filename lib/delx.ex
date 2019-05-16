@@ -13,7 +13,7 @@ defmodule Delx do
       ...> end
 
   You can delegate functions calls to another module by using the `Delx`
-  module and calling the `defdel/2` macro in the module body. It has
+  module and calling the `Delx.Defdel.defdel/2` macro in the module body. It has
   the same API as Elixir's own `Kernel.defdelegate/2` macro.
 
       iex> defmodule Greeter do
@@ -24,6 +24,11 @@ defmodule Delx do
 
       iex> Greeter.hello("Tobi")
       "Hello, Tobi!"
+
+  The reason you need to use `Delx` and define the `:otp_app` option is that
+  each application can configure their own delegation behavior. So third-party
+  libaries that also use Delx remain unaffected of your application-specific
+  configuration.
 
   ## Testing
 
