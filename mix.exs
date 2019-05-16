@@ -47,7 +47,7 @@ defmodule Delx.MixProject do
   defp deps do
     [
       {:excoveralls, "~> 0.11.0", only: :test},
-      {:ex_doc, "~> 0.20.2", only: [:dev, :test]}
+      {:ex_doc, "~> 0.20.2", only: :dev}
     ]
   end
 

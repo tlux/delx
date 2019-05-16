@@ -39,8 +39,6 @@ defmodule Delx do
   your `config/test.exs`:
 
       config :greeter, Delx, stub: true
-      # or
-      config :delx, :delegator, Delx.Delegator.Stub
 
   Then in your tests, you can assert whether delegation took place:
 
@@ -67,7 +65,7 @@ defmodule Delx do
 
   Then, in your `config/test.exs` you have to set the mock as delegator module.
 
-      config :delx, :delegator, Delx.Delegator.Mock
+      config :my_app, Delx, delegator: Delx.Delegator.Mock
 
   Please make sure not to use the `:stub` option and a `:delegator` option at
   the same time as this may lead to unexpected behavior.
