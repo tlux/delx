@@ -1,4 +1,8 @@
 defmodule Delx.StubbedDelegationError do
+  @moduledoc """
+  An exception that raises when `Delx.Delegator.Stub.apply/3` is invoked.
+  """
+
   import Exception, only: [format_mfa: 3]
 
   defexception [:source, :target, :args]
