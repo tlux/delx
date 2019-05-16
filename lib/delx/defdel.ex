@@ -1,8 +1,6 @@
 defmodule Delx.Defdel do
-  @doc """
-  A macro that defines a function which delegates to another module. Has the
-  same API as `Kernel.defdelegate/2`.
-  """
+  @moduledoc false
+
   defmacro defdel(funs, opts) do
     funs = Macro.escape(funs, unquote: true)
 

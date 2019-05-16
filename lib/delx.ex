@@ -13,8 +13,8 @@ defmodule Delx do
       ...> end
 
   You can delegate functions calls to another module by using the `Delx`
-  module and using the `defdel/2` macro. It has the same syntax and options as
-  Elixir's own `Kernel.defdelegate/2` macro.
+  module and calling the `defdel/2` macro in the module body. It has
+  the same API as Elixir's own `Kernel.defdelegate/2` macro.
 
       iex> defmodule Greeter do
       ...>   use Delx, otp_app: :greeter
@@ -22,7 +22,7 @@ defmodule Delx do
       ...>   defdel hello(name), to: Greeter.StringGreeter
       ...> end
 
-      iex> DelegatingModule.hello("Tobi")
+      iex> Greeter.hello("Tobi")
       "Hello, Tobi!"
 
   ## Testing
@@ -31,16 +31,18 @@ defmodule Delx do
   the actual implementation of the delegation target, thus eliminating all side
   effects.
 
-  ### With the Stub Delegator
+  ### Built-In Assertions
 
-  Delx brings it's own stub delegator.
+  Delx brings it's own test assertions.
 
-  You can activate it for your test environment by putting the following line in
-  your `config/test.exs`:
+  All you need to do is to activate delegation stubbing for your test
+  environment by putting the following line in your `config/test.exs`:
 
       config :greeter, Delx, stub: true
 
-  Then in your tests, you can assert whether delegation took place:
+  Then in your tests, you can import `Delx.TestAssertions` and use the
+  `Delx.TestAssertions.assert_delegate/2` and
+  `Delx.TestAssertions.refute_delegate/2` assertions.
 
       defmodule GreeterTest do
         use ExUnit.Case
@@ -54,16 +56,23 @@ defmodule Delx do
         end
       end
 
+  Note that once you activate stubbing all delegated functions do not return
+  anymore but instead raise the `Delx.StubbedDelegationError`. If you really
+  want to call the original implementation, you have to avoid any calls of
+  delegated functions.
+
   ### With Mox
 
   If you are using [Mox](https://hexdocs.pm/mox) in your application you have
-  another possibility to test delegates.
+  another possibility to test delegated functions.
 
-  Add the mock for the `Delx.Delegator` behavior to your `test/test_helper.exs`:
+  Register a mock for the `Delx.Delegator` behavior to your
+  `test/test_helper.exs` (or wherever you define your mocks):
 
       Mox.defmock(Delx.Delegator.Mock, for: Delx.Delegator)
 
-  Then, in your `config/test.exs` you have to set the mock as delegator module.
+  Then, in your `config/test.exs` you have to set the mock as delegator module
+  for your app.
 
       config :my_app, Delx, delegator: Delx.Delegator.Mock
 
@@ -94,6 +103,9 @@ defmodule Delx do
           end
         end
       end
+
+  For more information on how to implement your own delegator, refer to the
+  docs of the `Delx.Delegator` behavior.
   """
 
   defmacro __using__(opts) do

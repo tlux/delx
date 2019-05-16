@@ -3,7 +3,7 @@ defmodule Delx.Delegator do
   A module that defines the function that a custom delegator module has to
   implement.
 
-  A delegator only contains an `apply/3` function that takes the delegation
+  A delegator only contains an `c:apply/3` function that takes the delegation
   source as first argument, delegation target as second argument and the
   forwarded arguments list as third argument.
   """
