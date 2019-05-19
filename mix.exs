@@ -46,6 +46,7 @@ defmodule Delx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:benchee, "~> 1.0", only: :dev},
       {:excoveralls, "~> 0.11.0", only: :test},
       {:ex_doc, "~> 0.20.2", only: :dev}
     ]
@@ -59,7 +60,7 @@ defmodule Delx.MixProject do
     [
       licenses: ["MIT"],
       links: %{
-        "Source" => "https://github.com/i22-digitalagentur/delx"
+        "GitHub" => "https://github.com/i22-digitalagentur/delx"
       }
     ]
   end
