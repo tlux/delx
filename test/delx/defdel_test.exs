@@ -1,38 +1,49 @@
 defmodule Delx.DefdelTest do
-  use ExUnit.Case, async: false
+  use ExUnit.Case, async: true
 
-  setup do
-    on_exit(fn ->
-      Application.delete_env(:my_app, Delx)
-    end)
-
-    :ok
-  end
+  alias Delx.StubbedDelegationError
 
   describe "defdel/2" do
-    test "define delegator for single function" do
-      assert [:arg1_stub, :arg2_stub, :arg3_stub] =
-               SourceModuleA.my_fun(:arg1_stub, :arg2_stub, :arg3_stub)
+    test "define delegated function for single function" do
+      try do
+        SourceModuleA.my_fun(:arg1_stub, :arg2_stub, :arg3_stub)
+      rescue
+        error in StubbedDelegationError ->
+          assert error.source == {SourceModuleA, :my_fun}
+          assert error.target == {TargetModule, :my_fun}
+          assert error.args == [:arg1_stub, :arg2_stub, :arg3_stub]
+      end
     end
 
-    test "define delegator for multiple functions" do
-      assert [:arg1_stub, :arg2_stub, :arg3_stub] =
-               SourceModuleB.my_fun(:arg1_stub, :arg2_stub, :arg3_stub)
+    test "define delegated function for multiple functions" do
+      try do
+        SourceModuleB.my_fun(:arg1_stub, :arg2_stub, :arg3_stub)
+      rescue
+        error in StubbedDelegationError ->
+          assert error.source == {SourceModuleB, :my_fun}
+          assert error.target == {TargetModule, :my_fun}
+          assert error.args == [:arg1_stub, :arg2_stub, :arg3_stub]
+      end
 
-      assert :arg_stub = SourceModuleB.my_other_fun(:arg_stub)
+      try do
+        SourceModuleB.my_other_fun(:arg_stub)
+      rescue
+        error in StubbedDelegationError ->
+          assert error.source == {SourceModuleB, :my_other_fun}
+          assert error.target == {TargetModule, :my_other_fun}
+          assert error.args == [:arg_stub]
+      end
     end
 
-    test "define delegator for function with :as option" do
-      assert :arg_stub = SourceModuleA.custom_named_fun(:arg_stub)
-    end
-
-    test "define delegator for using custom delegator" do
-      Application.put_env(:my_app, Delx, delegator: EchoDelegator)
-
-      assert SourceModuleA.my_fun(:arg1_stub, :arg2_stub, :arg3_stub) ==
-               {:delx,
-                {{SourceModuleA, :my_fun}, {TargetModule, :my_fun},
-                 [:arg1_stub, :arg2_stub, :arg3_stub]}}
+    test "define delegated function for function with :as option" do
+      try do
+        SourceModuleA.custom_named_fun(:arg_stub)
+      rescue
+        error in StubbedDelegationError ->
+          assert error.source == {SourceModuleA, :custom_named_fun}
+          assert error.target == {TargetModule, :my_other_fun}
+          assert error.args == [:arg_stub]
+      end
     end
 
     test "delegate docs" do

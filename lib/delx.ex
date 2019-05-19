@@ -112,6 +112,9 @@ defmodule Delx do
 
   For more information on how to implement your own delegator, refer to the
   docs of the `Delx.Delegator` behavior.
+
+  Note that the configuration is only applied at compile time, so you are unable
+  to stub or replace the delegator module at runtime.
   """
 
   defmacro __using__(opts) do
@@ -120,15 +123,14 @@ defmodule Delx do
         opts[:otp_app] ||
           raise ArgumentError, "expected otp_app: to be given as argument"
 
-      @doc false
-      @spec __delegator__() :: module
-      def __delegator__ do
-        config = Application.get_env(unquote(otp_app), Delx, [])
+      config = Application.get_env(otp_app, Delx, [])
 
-        case Keyword.fetch(config, :stub) do
-          {:ok, true} -> Delx.Delegator.Stub
-          _ -> Keyword.get(config, :delegator, Delx.Delegator.Common)
-        end
+      case Keyword.fetch(config, :stub) do
+        {:ok, true} ->
+          @delegator Delx.Delegator.Stub
+
+        _ ->
+          @delegator Keyword.get(config, :delegator, Delx.Delegator.Common)
       end
 
       import Delx.Defdel

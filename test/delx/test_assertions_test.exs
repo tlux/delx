@@ -1,19 +1,9 @@
 defmodule DelxTest.TestAssertionsTest do
-  use ExUnit.Case, async: false
+  use ExUnit.Case, async: true
 
   import Delx.TestAssertions
 
   alias ExUnit.AssertionError
-
-  setup do
-    Application.put_env(:my_app, Delx, stub: true)
-
-    on_exit(fn ->
-      Application.delete_env(:my_app, Delx)
-    end)
-
-    :ok
-  end
 
   describe "assert_delegate/1" do
     test "success" do
