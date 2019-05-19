@@ -1,6 +1,6 @@
 defmodule Delx.StubbedDelegationError do
   @moduledoc """
-  An exception that raises when `Delx.Delegator.Stub.apply/3` is invoked.
+  An exception that raises when when a delegated function is stubbed.
   """
 
   import Exception, only: [format_mfa: 3]
