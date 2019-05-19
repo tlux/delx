@@ -101,8 +101,9 @@ defmodule Delx do
               fn {Greeter, :hello},
                  {Greeter.StringGreeter, :hello},
                  ["Tobi"] ->
-              :ok
-            end)
+                :ok
+              end
+            )
 
             Greeter.hello("Tobi")
           end
