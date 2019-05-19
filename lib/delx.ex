@@ -122,15 +122,13 @@ defmodule Delx do
 
       config = Application.get_env(otp_app, Delx, [])
 
-      delegator =
-        case Keyword.fetch(config, :stub) do
-          {:ok, true} -> Delx.Delegator.Stub
-          _ -> Keyword.get(config, :delegator, Delx.Delegator.Common)
-        end
+      case Keyword.fetch(config, :stub) do
+        {:ok, true} ->
+          @delegator Delx.Delegator.Stub
 
-      @doc false
-      @spec __delegator__() :: module
-      def __delegator__, do: unquote(delegator)
+        _ ->
+          @delegator Keyword.get(config, :delegator, Delx.Delegator.Common)
+      end
 
       import Delx.Defdel
     end
