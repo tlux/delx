@@ -1,13 +1,5 @@
 defmodule Delx.DefdelTest do
-  use ExUnit.Case, async: false
-
-  setup do
-    on_exit(fn ->
-      Application.delete_env(:my_app, Delx)
-    end)
-
-    :ok
-  end
+  use ExUnit.Case, async: true
 
   describe "defdel/2" do
     test "define delegator for single function" do

@@ -120,16 +120,17 @@ defmodule Delx do
         opts[:otp_app] ||
           raise ArgumentError, "expected otp_app: to be given as argument"
 
-      @doc false
-      @spec __delegator__() :: module
-      def __delegator__ do
-        config = Application.get_env(unquote(otp_app), Delx, [])
+      config = Application.get_env(otp_app, Delx, [])
 
+      delegator =
         case Keyword.fetch(config, :stub) do
           {:ok, true} -> Delx.Delegator.Stub
           _ -> Keyword.get(config, :delegator, Delx.Delegator.Common)
         end
-      end
+
+      @doc false
+      @spec __delegator__() :: module
+      def __delegator__, do: unquote(delegator)
 
       import Delx.Defdel
     end

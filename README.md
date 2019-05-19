@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/i22-digitalagentur/delx.svg?branch=master)](https://travis-ci.org/i22-digitalagentur/delx)
 [![Hex.pm](https://img.shields.io/hexpm/v/delx.svg)](https://hex.pm/packages/delx)
 
+[Defdelegate](https://hexdocs.pm/elixir/Kernel.html#defdelegate/2) on steroids!
 An Elixir library to make function delegation testable.
 
 ## Prerequisites
@@ -18,7 +19,7 @@ by adding `delx` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:delx, "~> 2.0.1"}
+    {:delx, "~> 3.0.0"}
   ]
 end
 ```
@@ -143,3 +144,6 @@ end
 
 For more information on how to implement your own delegator, refer to the
 docs of the `Delx.Delegator` behavior.
+
+Note that the configuration is only applied at compile time, so you are unable
+to stub or replace the delegator module at runtime.
