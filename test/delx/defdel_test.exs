@@ -4,7 +4,7 @@ defmodule Delx.DefdelTest do
   alias Delx.StubbedDelegationError
 
   describe "defdel/2" do
-    test "define delegator for single function" do
+    test "define delegated function for single function" do
       try do
         SourceModuleA.my_fun(:arg1_stub, :arg2_stub, :arg3_stub)
       rescue
@@ -15,7 +15,7 @@ defmodule Delx.DefdelTest do
       end
     end
 
-    test "define delegator for multiple functions" do
+    test "define delegated function for multiple functions" do
       try do
         SourceModuleB.my_fun(:arg1_stub, :arg2_stub, :arg3_stub)
       rescue
@@ -35,7 +35,7 @@ defmodule Delx.DefdelTest do
       end
     end
 
-    test "define delegator for function with :as option" do
+    test "define delegated function for function with :as option" do
       try do
         SourceModuleA.custom_named_fun(:arg_stub)
       rescue
@@ -45,13 +45,6 @@ defmodule Delx.DefdelTest do
           assert error.args == [:arg_stub]
       end
     end
-
-    # test "define delegator for using custom delegator" do
-    #   assert SourceModuleA.my_fun(:arg1_stub, :arg2_stub, :arg3_stub) ==
-    #            {:delx,
-    #             {{SourceModuleA, :my_fun}, {TargetModule, :my_fun},
-    #              [:arg1_stub, :arg2_stub, :arg3_stub]}}
-    # end
 
     test "delegate docs" do
       assert {_, _, _, "text/markdown", _, _, doc_entries} =

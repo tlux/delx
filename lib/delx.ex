@@ -112,6 +112,9 @@ defmodule Delx do
 
   For more information on how to implement your own delegator, refer to the
   docs of the `Delx.Delegator` behavior.
+
+  Note that the configuration is only applied at compile time, so you are unable
+  to stub or replace the delegator module at runtime.
   """
 
   defmacro __using__(opts) do
