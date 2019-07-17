@@ -129,6 +129,8 @@ defmodule Delx.TestAssertions do
     end
   end
 
+  defp stub_args(0), do: []
+
   defp stub_args(arity) do
     Enum.map(1..arity, &{:arg_stub, &1})
   end

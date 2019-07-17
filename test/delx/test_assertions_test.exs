@@ -8,12 +8,23 @@ defmodule DelxTest.TestAssertionsTest do
   describe "assert_delegate/1" do
     test "success" do
       assert_delegate(
+        {SourceModuleB, :my_other_fun, 0},
+        to: TargetModule
+      )
+
+      assert_delegate(
         {SourceModuleB, :my_other_fun, 1},
         to: TargetModule
       )
     end
 
     test "success with :as option" do
+      assert_delegate(
+        {SourceModuleA, :custom_named_fun, 0},
+        to: TargetModule,
+        as: :my_other_fun
+      )
+
       assert_delegate(
         {SourceModuleA, :custom_named_fun, 1},
         to: TargetModule,

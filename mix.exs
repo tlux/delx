@@ -4,7 +4,7 @@ defmodule Delx.MixProject do
   def project do
     [
       app: :delx,
-      version: "2.1.0",
+      version: "2.1.1",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       description: description(),
