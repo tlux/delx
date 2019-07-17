@@ -1,4 +1,4 @@
-defmodule Delx.Defdel do
+defmodule Delx.Defdelegate do
   @moduledoc """
   A module defining a macro to define delegate functions.
   """
@@ -18,7 +18,7 @@ defmodule Delx.Defdel do
       ...>   defdel hello(name), to: Greeter.StringGreeter, as: :welcome
       ...> end
   """
-  defmacro defdel(funs, opts) do
+  defmacro defdelegate(funs, opts) do
     funs = Macro.escape(funs, unquote: true)
 
     quote bind_quoted: [funs: funs, opts: opts] do
@@ -27,6 +27,10 @@ defmodule Delx.Defdel do
 
       for fun <- List.wrap(funs) do
         {name, args, as, as_args} = Kernel.Utils.defdelegate(fun, opts)
+
+        # Dialyzer may possibly complain about "No local return". So we tell him
+        # to stop as we're only delegating here.
+        @dialyzer {:nowarn_function, [{name, length(as_args)}]}
 
         @doc delegate_to: {target, as, length(as_args)}
         def unquote(name)(unquote_splicing(args)) do

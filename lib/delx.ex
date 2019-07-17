@@ -133,7 +133,8 @@ defmodule Delx do
           @delegator Keyword.get(config, :delegator, Delx.Delegator.Common)
       end
 
-      import Delx.Defdel
+      import Kernel, except: [defdelegate: 2]
+      import Delx.Defdelegate
     end
   end
 end

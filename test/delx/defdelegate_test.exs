@@ -1,4 +1,4 @@
-defmodule Delx.DefdelTest do
+defmodule Delx.DefdelegateTest do
   use ExUnit.Case, async: true
 
   alias Delx.StubbedDelegationError
