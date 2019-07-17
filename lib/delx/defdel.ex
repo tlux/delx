@@ -28,6 +28,10 @@ defmodule Delx.Defdel do
       for fun <- List.wrap(funs) do
         {name, args, as, as_args} = Kernel.Utils.defdelegate(fun, opts)
 
+        # Dialyzer may possibly complain about "No local return". So we tell him
+        # to stop as we're only delegating here.
+        @dialyzer {:nowarn_function, [{name, length(as_args)}]}
+
         @doc delegate_to: {target, as, length(as_args)}
         def unquote(name)(unquote_splicing(args)) do
           @delegator.apply(
