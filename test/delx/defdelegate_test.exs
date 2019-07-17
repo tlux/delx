@@ -1,14 +1,14 @@
 defmodule Delx.DefdelegateTest do
   use ExUnit.Case, async: true
 
-  alias Delx.StubbedDelegationError
+  alias Delx.MockedDelegationError
 
   describe "defdel/2" do
     test "define delegated function for single function" do
       try do
         SourceModuleA.my_fun(:arg1_stub, :arg2_stub, :arg3_stub)
       rescue
-        error in StubbedDelegationError ->
+        error in MockedDelegationError ->
           assert error.source == {SourceModuleA, :my_fun}
           assert error.target == {TargetModule, :my_fun}
           assert error.args == [:arg1_stub, :arg2_stub, :arg3_stub]
@@ -19,7 +19,7 @@ defmodule Delx.DefdelegateTest do
       try do
         SourceModuleB.my_fun(:arg1_stub, :arg2_stub, :arg3_stub)
       rescue
-        error in StubbedDelegationError ->
+        error in MockedDelegationError ->
           assert error.source == {SourceModuleB, :my_fun}
           assert error.target == {TargetModule, :my_fun}
           assert error.args == [:arg1_stub, :arg2_stub, :arg3_stub]
@@ -28,7 +28,7 @@ defmodule Delx.DefdelegateTest do
       try do
         SourceModuleB.my_other_fun(:arg_stub)
       rescue
-        error in StubbedDelegationError ->
+        error in MockedDelegationError ->
           assert error.source == {SourceModuleB, :my_other_fun}
           assert error.target == {TargetModule, :my_other_fun}
           assert error.args == [:arg_stub]
@@ -39,7 +39,7 @@ defmodule Delx.DefdelegateTest do
       try do
         SourceModuleA.custom_named_fun(:arg_stub)
       rescue
-        error in StubbedDelegationError ->
+        error in MockedDelegationError ->
           assert error.source == {SourceModuleA, :custom_named_fun}
           assert error.target == {TargetModule, :my_other_fun}
           assert error.args == [:arg_stub]

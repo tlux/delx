@@ -40,10 +40,10 @@ defmodule Delx do
 
   Delx brings it's own test assertions.
 
-  All you need to do is to activate delegation stubbing for your test
+  All you need to do is to activate delegation mocking for your test
   environment by putting the following line in your `config/test.exs`:
 
-      config :greeter, Delx, stub: true
+      config :greeter, Delx, mock: true
 
   Then in your tests, you can import `Delx.TestAssertions` and use the
   `Delx.TestAssertions.assert_delegate/2` and
@@ -61,8 +61,8 @@ defmodule Delx do
         end
       end
 
-  Note that once you activate stubbing all delegated functions do not return
-  anymore but instead raise the `Delx.StubbedDelegationError`. If you really
+  Note that once you activate mocking all delegated functions do not return
+  anymore but instead raise the `Delx.MockedDelegationError`. If you really
   want to call the original implementation, you have to avoid any calls of
   delegated functions.
 
@@ -81,7 +81,7 @@ defmodule Delx do
 
       config :my_app, Delx, delegator: Delx.Delegator.Mock
 
-  Please make sure not to use the `:stub` option and a `:delegator` option at
+  Please make sure not to use the `:mock` option and a `:delegator` option at
   the same time as this may lead to unexpected behavior.
 
   Now you are able to `expect` calls to delegated functions:
@@ -114,7 +114,7 @@ defmodule Delx do
   docs of the `Delx.Delegator` behavior.
 
   Note that the configuration is only applied at compile time, so you are unable
-  to stub or replace the delegator module at runtime.
+  to mock or replace the delegator module at runtime.
   """
 
   defmacro __using__(opts) do
@@ -125,9 +125,9 @@ defmodule Delx do
 
       config = Application.get_env(otp_app, Delx, [])
 
-      case Keyword.fetch(config, :stub) do
+      case Keyword.fetch(config, :mock) do
         {:ok, true} ->
-          @delegator Delx.Delegator.Stub
+          @delegator Delx.Delegator.Mock
 
         _ ->
           @delegator Keyword.get(config, :delegator, Delx.Delegator.Common)

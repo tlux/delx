@@ -2,16 +2,16 @@ defmodule Delx.TestAssertions do
   @moduledoc """
   A module that contains assertions for `ExUnit` to test function delegation.
 
-  Note that you need to activate stubbing for your test environment in order to
+  Note that you need to activate mock mode for your test environment in order to
   make the assertions work. In your `config/test.exs` file:
 
-      config :my_app, Delx, stub: true
+      config :my_app, Delx, mock: true
   """
 
   import Exception, only: [format_mfa: 3]
   import ExUnit.Assertions
 
-  alias Delx.StubbedDelegationError
+  alias Delx.MockedDelegationError
 
   @doc """
   Asserts whether the function specified by MFA (module-function-arity tuple) is
@@ -52,7 +52,7 @@ defmodule Delx.TestAssertions do
           "delegation found."
       )
     rescue
-      error in StubbedDelegationError ->
+      error in MockedDelegationError ->
         case error do
           %{
             source: {^mod, ^fun},
@@ -110,7 +110,7 @@ defmodule Delx.TestAssertions do
       apply(mod, fun, args)
       :ok
     rescue
-      error in StubbedDelegationError ->
+      error in MockedDelegationError ->
         case error do
           %{
             source: {^mod, ^fun},

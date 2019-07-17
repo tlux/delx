@@ -63,11 +63,11 @@ effects.
 
 Delx brings it's own test assertions.
 
-All you need to do is to activate delegation stubbing for your test
-environment by putting the following line in your `config/test.exs`:
+All you need to do is to activate delegation mocking for your test environment
+by putting the following line in your `config/test.exs`:
 
 ```elixir
-config :greeter, Delx, stub: true
+config :greeter, Delx, mock: true
 ```
 
 Then in your tests, you can import `Delx.TestAssertions` and use the
@@ -87,8 +87,8 @@ defmodule GreeterTest do
 end
 ```
 
-Note that once you activate stubbing all delegated functions do not return
-anymore but instead raise the `Delx.StubbedDelegationError`. If you really
+Note that once you activate mocking all delegated functions do not return
+anymore but instead raise the `Delx.MockedDelegationError`. If you really
 want to call the original implementation, you have to avoid any calls of
 delegated functions.
 
@@ -111,8 +111,8 @@ for your app.
 config :my_app, Delx, delegator: Delx.Delegator.Mock
 ```
 
-Please make sure not to use the `:stub` option and a `:delegator` option at
-the same time as this may lead to unexpected behavior.
+Please make sure not to use the `:mock` option and a `:delegator` option at the
+same time as this may lead to unexpected behavior.
 
 Now you are able to `expect` calls to delegated functions:
 
@@ -146,4 +146,4 @@ For more information on how to implement your own delegator, refer to the
 docs of the `Delx.Delegator` behavior.
 
 Note that the configuration is only applied at compile time, so you are unable
-to stub or replace the delegator module at runtime.
+to mock or replace the delegator module at runtime.

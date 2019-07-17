@@ -1,8 +1,8 @@
-defmodule Delx.Delegator.StubTest do
+defmodule Delx.Delegator.MockTest do
   use ExUnit.Case, async: true
 
-  alias Delx.Delegator.Stub
-  alias Delx.StubbedDelegationError
+  alias Delx.Delegator.Mock
+  alias Delx.MockedDelegationError
 
   describe "apply/3" do
     test "send and return call args" do
@@ -16,9 +16,9 @@ defmodule Delx.Delegator.StubTest do
       ]
 
       try do
-        Stub.apply(source, target, args)
+        Mock.apply(source, target, args)
       rescue
-        error in StubbedDelegationError ->
+        error in MockedDelegationError ->
           assert error.source == source
           assert error.target == target
           assert error.args == args
