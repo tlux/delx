@@ -19,7 +19,7 @@ by adding `delx` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:delx, "~> 2.1.0"}
+    {:delx, "~> 2.1"}
   ]
 end
 ```
