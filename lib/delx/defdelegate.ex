@@ -1,24 +1,24 @@
-defmodule Delx.Defdel do
+defmodule Delx.Defdelegate do
   @moduledoc """
   A module defining a macro to define delegate functions.
   """
 
   @doc """
   You can delegate functions calls to another module by using the `Delx`
-  module and calling the `defdel/2` macro in the module body. It has
+  module and calling the `defdelegate/2` macro in the module body. It has
   the same API as Elixir's own `Kernel.defdelegate/2` macro.
 
   ## Example
 
-  Before calling `defdel/2`, you need to use `Delx`.
+  Before calling `defdelegate/2`, you need to use `Delx`.
 
       iex> defmodule Greeter do
       ...>   use Delx, otp_app: :greeter
 
-      ...>   defdel hello(name), to: Greeter.StringGreeter, as: :welcome
+      ...>   defdelegate hello(name), to: Greeter.StringGreeter, as: :welcome
       ...> end
   """
-  defmacro defdel(funs, opts) do
+  defmacro defdelegate(funs, opts) do
     funs = Macro.escape(funs, unquote: true)
 
     quote bind_quoted: [funs: funs, opts: opts] do

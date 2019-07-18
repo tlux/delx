@@ -4,7 +4,7 @@ defmodule Delx.MixProject do
   def project do
     [
       app: :delx,
-      version: "2.1.1",
+      version: "3.0.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       description: description(),
@@ -29,7 +29,7 @@ defmodule Delx.MixProject do
           Delegators: [
             Delx.Delegator,
             Delx.Delegator.Common,
-            Delx.Delegator.Stub
+            Delx.Delegator.Mock
           ]
         ]
       ]

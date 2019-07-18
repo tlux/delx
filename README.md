@@ -39,14 +39,14 @@ end
 ```
 
 You can delegate functions calls to another module by using the `Delx` module
-and calling the `defdel/2` macro in the module body. It has the same API as
+and calling the `defdelegate/2` macro in the module body. It has the same API as
 Elixir's own `Kernel.defdelegate/2` macro.
 
 ```elixir
 defmodule Greeter do
   use Delx, otp_app: :greeter
 
-  defdel hello(name), to: Greeter.StringGreeter
+  defdelegate hello(name), to: Greeter.StringGreeter
 end
 
 Greeter.hello("Tobi")
@@ -63,11 +63,11 @@ effects.
 
 Delx brings it's own test assertions.
 
-All you need to do is to activate delegation stubbing for your test
-environment by putting the following line in your `config/test.exs`:
+All you need to do is to activate delegation mocking for your test environment
+by putting the following line in your `config/test.exs`:
 
 ```elixir
-config :greeter, Delx, stub: true
+config :greeter, Delx, mock: true
 ```
 
 Then in your tests, you can import `Delx.TestAssertions` and use the
@@ -87,8 +87,8 @@ defmodule GreeterTest do
 end
 ```
 
-Note that once you activate stubbing all delegated functions do not return
-anymore but instead raise the `Delx.StubbedDelegationError`. If you really
+Note that once you activate mocking all delegated functions do not return
+anymore but instead raise the `Delx.MockedDelegationError`. If you really
 want to call the original implementation, you have to avoid any calls of
 delegated functions.
 
@@ -101,18 +101,18 @@ Register a mock for the `Delx.Delegator` behavior to your
 `test/test_helper.exs` (or wherever you define your mocks):
 
 ```elixir
-Mox.defmock(Delx.Delegator.Mock, for: Delx.Delegator)
+Mox.defmock(Greeter.DelegatorMock, for: Delx.Delegator)
 ```
 
 Then, in your `config/test.exs` you have to set the mock as delegator module
 for your app.
 
 ```elixir
-config :my_app, Delx, delegator: Delx.Delegator.Mock
+config :my_app, Delx, delegator: Greeter.DelegatorMock
 ```
 
-Please make sure not to use the `:stub` option and a `:delegator` option at
-the same time as this may lead to unexpected behavior.
+Please make sure not to use the `:mock` option and a `:delegator` option at the
+same time as this may lead to unexpected behavior.
 
 Now you are able to `expect` calls to delegated functions:
 
@@ -127,7 +127,7 @@ defmodule GreeterTest do
   describe "hello/1" do
     test "delegate to Greeter.StringGreeter" do
       expect(
-        Delx.Delegator.Mock,
+        Greeter.DelegatorMock,
         :apply,
         fn {Greeter, :hello},
            {Greeter.StringGreeter, :hello},
@@ -146,4 +146,24 @@ For more information on how to implement your own delegator, refer to the
 docs of the `Delx.Delegator` behavior.
 
 Note that the configuration is only applied at compile time, so you are unable
-to stub or replace the delegator module at runtime.
+to mock or replace the delegator module at runtime.
+
+## Migration from v2 to v3
+
+Note that the function `defdel/2` has been removed in favor of `defdelegate/2`
+to give a better experience with the tooling. Additionally, let's say you want
+to migrate away from Delx you can simply un`use` Delx to fall back to the
+default `Kernel.defdelegate/2` and your code will still work.
+
+The config option to enable testing mode has changed from `stub` to `mock`. If
+you got the following line in your config:
+
+```elixir
+config :greeter, Delx, stub: true
+```
+
+Please change it to:
+
+```elixir
+config :greeter, Delx, mock: true
+```

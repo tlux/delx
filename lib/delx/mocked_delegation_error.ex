@@ -1,6 +1,6 @@
-defmodule Delx.StubbedDelegationError do
+defmodule Delx.MockedDelegationError do
   @moduledoc """
-  An exception that raises when when a delegated function is stubbed.
+  An exception that raises when when a delegated function is mocked.
   """
 
   import Exception, only: [format_mfa: 3]
@@ -16,6 +16,6 @@ defmodule Delx.StubbedDelegationError do
     arity = length(args)
 
     "Delegation from #{format_mfa(source_mod, source_fun, arity)} " <>
-      "to #{format_mfa(target_mod, target_fun, arity)} is stubbed"
+      "to #{format_mfa(target_mod, target_fun, arity)} is mocked"
   end
 end

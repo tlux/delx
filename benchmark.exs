@@ -2,10 +2,10 @@ defmodule Defdelegate do
   defdelegate hello_world(arg), to: TargetModule
 end
 
-defmodule Defdel do
+defmodule DelxDefdelegate do
   use Delx, otp_app: :delx
 
-  defdel(hello_world(arg), to: TargetModule)
+  defdelegate hello_world(arg), to: TargetModule
 end
 
 defmodule TargetModule do
@@ -13,6 +13,6 @@ defmodule TargetModule do
 end
 
 Benchee.run(%{
-  "defdelegate" => fn -> Defdelegate.hello_world(:my_arg) end,
-  "defdel" => fn -> Defdel.hello_world(:my_arg) end
+  "defdelegate without Delx" => fn -> Defdelegate.hello_world(:my_arg) end,
+  "defdelegate with Delx" => fn -> DelxDefdelegate.hello_world(:my_arg) end
 })
