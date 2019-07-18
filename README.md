@@ -101,14 +101,14 @@ Register a mock for the `Delx.Delegator` behavior to your
 `test/test_helper.exs` (or wherever you define your mocks):
 
 ```elixir
-Mox.defmock(Delx.Delegator.Mock, for: Delx.Delegator)
+Mox.defmock(Greeter.DelegatorMock, for: Delx.Delegator)
 ```
 
 Then, in your `config/test.exs` you have to set the mock as delegator module
 for your app.
 
 ```elixir
-config :my_app, Delx, delegator: Delx.Delegator.Mock
+config :my_app, Delx, delegator: Greeter.DelegatorMock
 ```
 
 Please make sure not to use the `:mock` option and a `:delegator` option at the
@@ -127,7 +127,7 @@ defmodule GreeterTest do
   describe "hello/1" do
     test "delegate to Greeter.StringGreeter" do
       expect(
-        Delx.Delegator.Mock,
+        Greeter.DelegatorMock,
         :apply,
         fn {Greeter, :hello},
            {Greeter.StringGreeter, :hello},
