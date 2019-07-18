@@ -147,3 +147,23 @@ docs of the `Delx.Delegator` behavior.
 
 Note that the configuration is only applied at compile time, so you are unable
 to mock or replace the delegator module at runtime.
+
+## Migration from v2 to v3
+
+Note that the function `defdel/2` has been removed in favor of `defdelegate/2`
+to give a better experience with the tooling. Additionally, let's say you want
+to migrate away from Delx you can simply un`use` Delx to fall back to the
+default `Kernel.defdelegate/2` and your code will still work.
+
+The config option to enable testing mode has changed from `stub` to `mock`. If
+you got the following line in your config:
+
+```elixir
+config :greeter, Delx, stub: true
+```
+
+Please change it to:
+
+```elixir
+config :greeter, Delx, mock: true
+```
