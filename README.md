@@ -39,14 +39,14 @@ end
 ```
 
 You can delegate functions calls to another module by using the `Delx` module
-and calling the `defdel/2` macro in the module body. It has the same API as
+and calling the `defdelegate/2` macro in the module body. It has the same API as
 Elixir's own `Kernel.defdelegate/2` macro.
 
 ```elixir
 defmodule Greeter do
   use Delx, otp_app: :greeter
 
-  defdel hello(name), to: Greeter.StringGreeter
+  defdelegate hello(name), to: Greeter.StringGreeter
 end
 
 Greeter.hello("Tobi")

@@ -3,7 +3,7 @@ defmodule Delx.DefdelegateTest do
 
   alias Delx.MockedDelegationError
 
-  describe "defdel/2" do
+  describe "defdelegate/2" do
     test "define delegated function for single function" do
       try do
         SourceModuleA.my_fun(:arg1_stub, :arg2_stub, :arg3_stub)
