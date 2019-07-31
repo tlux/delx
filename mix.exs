@@ -46,7 +46,7 @@ defmodule Delx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:benchee, "~> 1.0", only: :dev},
+      {:benchee, "~> 1.0", only: [:dev, :dev_runtime]},
       {:excoveralls, "~> 0.11.0", only: :test},
       {:ex_doc, "~> 0.20.2", only: :dev}
     ]
