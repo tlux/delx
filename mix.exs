@@ -18,6 +18,7 @@ defmodule Delx.MixProject do
       ],
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
+      aliases: aliases(),
 
       # Docs
       name: "Delx",
@@ -70,4 +71,10 @@ defmodule Delx.MixProject do
   end
 
   defp elixirc_paths(_), do: ["lib"]
+
+  defp aliases do
+    [
+      benchmark: ["run benchmark.exs"]
+    ]
+  end
 end
