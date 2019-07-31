@@ -34,7 +34,7 @@ defmodule Delx.Defdelegate do
 
         @doc delegate_to: {target, as, length(as_args)}
         def unquote(name)(unquote_splicing(args)) do
-          @delegator.apply(
+          __delegator__().apply(
             {unquote(__MODULE__), unquote(name)},
             {unquote(target), unquote(as)},
             unquote(as_args)

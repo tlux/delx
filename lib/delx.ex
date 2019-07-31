@@ -125,12 +125,23 @@ defmodule Delx do
 
       config = Application.get_env(otp_app, Delx, [])
 
-      case Keyword.fetch(config, :mock) do
-        {:ok, true} ->
-          @delegator Delx.Delegator.Mock
+      if config[:runtime] do
+        @doc false
+        def __delegator__ do
+          case Keyword.fetch(unquote(config), :mock) do
+            {:ok, true} -> Delx.Delegator.Mock
+            _ -> Keyword.get(unquote(config), :delegator, Delx.Delegator.Common)
+          end
+        end
+      else
+        delegator =
+          case Keyword.fetch(config, :mock) do
+            {:ok, true} -> Delx.Delegator.Mock
+            _ -> Keyword.get(config, :delegator, Delx.Delegator.Common)
+          end
 
-        _ ->
-          @delegator Keyword.get(config, :delegator, Delx.Delegator.Common)
+        @doc false
+        def __delegator__, do: unquote(delegator)
       end
 
       import Kernel, except: [defdelegate: 2]
