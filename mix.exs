@@ -65,6 +65,9 @@ defmodule Delx.MixProject do
     ]
   end
 
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(env) when env in [:test, :test_runtime] do
+    ["lib", "test/support"]
+  end
+
   defp elixirc_paths(_), do: ["lib"]
 end

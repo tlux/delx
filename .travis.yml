@@ -1,6 +1,8 @@
 language: elixir
 
-script: mix test --cover
+script:
+- mix test --cover
+- MIX_ENV=test_runtime mix test
 
 matrix:
   include:
