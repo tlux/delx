@@ -117,6 +117,8 @@ defmodule Delx do
   to mock or replace the delegator module at runtime.
   """
 
+  alias Delx.ConfigUtils
+
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
       otp_app =
@@ -128,17 +130,11 @@ defmodule Delx do
       if config[:runtime] do
         @doc false
         def __delegator__ do
-          case Keyword.fetch(unquote(config), :mock) do
-            {:ok, true} -> Delx.Delegator.Mock
-            _ -> Keyword.get(unquote(config), :delegator, Delx.Delegator.Common)
-          end
+          runtime_config = Application.get_env(unquote(otp_app), Delx, [])
+          ConfigUtils.get_delegator(runtime_config)
         end
       else
-        delegator =
-          case Keyword.fetch(config, :mock) do
-            {:ok, true} -> Delx.Delegator.Mock
-            _ -> Keyword.get(config, :delegator, Delx.Delegator.Common)
-          end
+        delegator = ConfigUtils.get_delegator(config)
 
         @doc false
         def __delegator__, do: unquote(delegator)
