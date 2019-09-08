@@ -1,6 +1,7 @@
 # Delx
 
 [![Build Status](https://travis-ci.org/i22-digitalagentur/delx.svg?branch=master)](https://travis-ci.org/i22-digitalagentur/delx)
+[![Coverage Status](https://coveralls.io/repos/github/i22-digitalagentur/delx/badge.svg?branch=master)](https://coveralls.io/github/i22-digitalagentur/delx?branch=master)
 [![Hex.pm](https://img.shields.io/hexpm/v/delx.svg)](https://hex.pm/packages/delx)
 
 [Defdelegate](https://hexdocs.pm/elixir/Kernel.html#defdelegate/2) on steroids!
