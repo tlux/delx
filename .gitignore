@@ -23,3 +23,5 @@ erl_crash.dump
 delx-*.tar
 
 /.elixir_ls
+/.vscode
+.DS_Store
