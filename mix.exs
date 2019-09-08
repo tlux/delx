@@ -14,7 +14,8 @@ defmodule Delx.MixProject do
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
-        "coveralls.html": :test
+        "coveralls.html": :test,
+        "coveralls.travis": :test
       ],
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
