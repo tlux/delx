@@ -1,6 +1,10 @@
 language: elixir
 
-script: mix coveralls.travis
+script:
+  - mix format --check-formatted
+  - mix credo --strict
+  - travis_wait 30 mix dialyzer --halt-exit-status
+  - mix coveralls.travis
 
 matrix:
   include:
