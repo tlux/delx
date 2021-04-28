@@ -52,7 +52,7 @@ defmodule Delx.MixProject do
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.14", only: :test},
-      {:ex_doc, "~> 0.24", only: :dev}
+      {:ex_doc, "0.20.2", only: :dev}
     ]
   end
 
