@@ -23,7 +23,7 @@ defmodule Delx.MixProject do
 
       # Docs
       name: "Delx",
-      source_url: "https://github.com/i22-digitalagentur/delx",
+      source_url: "https://github.com/tlux/delx",
       docs: [
         main: "Delx",
         extras: ["README.md"],
@@ -64,7 +64,7 @@ defmodule Delx.MixProject do
     [
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/i22-digitalagentur/delx"
+        "GitHub" => "https://github.com/tlux/delx"
       }
     ]
   end
