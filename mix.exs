@@ -24,17 +24,7 @@ defmodule Delx.MixProject do
       # Docs
       name: "Delx",
       source_url: "https://github.com/tlux/delx",
-      docs: [
-        main: "Delx",
-        extras: ["README.md"],
-        groups_for_modules: [
-          Delegators: [
-            Delx.Delegator,
-            Delx.Delegator.Common,
-            Delx.Delegator.Mock
-          ]
-        ]
-      ]
+      docs: docs()
     ]
   end
 
@@ -71,4 +61,18 @@ defmodule Delx.MixProject do
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
+
+  defp docs do
+    [
+      main: "Delx",
+      extras: ["README.md"],
+      groups_for_modules: [
+        Delegators: [
+          Delx.Delegator,
+          Delx.Delegator.Common,
+          Delx.Delegator.Mock
+        ]
+      ]
+    ]
+  end
 end
