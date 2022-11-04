@@ -21,12 +21,21 @@ defmodule Delx.Defdelegate do
   defmacro defdelegate(funs, opts) do
     funs = Macro.escape(funs, unquote: true)
 
-    quote bind_quoted: [funs: funs, opts: opts] do
+    {m, f} =
+      cond do
+        Version.match?(System.version(), ">= 1.14.0") ->
+          {Kernel.Utils, :defdelegate_each}
+
+        true ->
+          {Kernel.Utils, :defdelegate}
+      end
+
+    quote bind_quoted: [funs: funs, opts: opts, m: m, f: f] do
       target =
         opts[:to] || raise ArgumentError, "expected to: to be given as argument"
 
       for fun <- List.wrap(funs) do
-        {name, args, as, as_args} = Kernel.Utils.defdelegate(fun, opts)
+        {name, args, as, as_args} = apply(m, f, [fun, opts])
 
         # Dialyzer may possibly complain about "No local return". So we tell him
         # to stop as we're only delegating here.
