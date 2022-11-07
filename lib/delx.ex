@@ -118,12 +118,24 @@ defmodule Delx do
   """
 
   defmacro __using__(opts) do
-    quote bind_quoted: [opts: opts] do
-      otp_app =
-        opts[:otp_app] ||
-          raise ArgumentError, "expected otp_app: to be given as argument"
+    otp_app =
+      opts[:otp_app] ||
+        raise ArgumentError, "expected otp_app: to be given as argument"
 
-      config = Application.get_env(otp_app, Delx, [])
+    config_read =
+      if Version.match?(System.version(), "~> 1.10") do
+        quote do
+          require Application
+          Application.compile_env(unquote(otp_app), Delx, [])
+        end
+      else
+        quote do
+          Application.get_env(unquote(otp_app), Delx, [])
+        end
+      end
+
+    quote do
+      config = unquote(config_read)
 
       case Keyword.fetch(config, :mock) do
         {:ok, true} ->
